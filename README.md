@@ -24,6 +24,7 @@ Then open: `http://localhost:8000`
 - Jump: `W` or `↑` or `Space`
 - Shoot: `J` or `K`
 - Restart: `R`
+- Touch (iPhone): on-screen buttons for move / jump / shoot / restart
 
 ## Notes
 
@@ -46,6 +47,11 @@ Generated files are written to `assets/generated/` (they are intentionally not t
 - `trees_line.png`
 - `kalisz_blocks.png`
 - `ground_tile.png`
+- `kiosk_ruch.png`
+- `bus_stop.png`
+- `bus_nineties.png`
+- `hills.png`
+- `platform_brick.png`
 
 If you prefer, you can also run:
 
@@ -121,3 +127,7 @@ I attempted to install Playwright, but package installation in this environment 
 - Game now uses generated `kalisz_blocks.png`, `trees_line.png`, and `ground_tile.png` layers in scene rendering.
 - Added cloud drift animation, larger player render scale, larger bullets, and a jump animation frame.
 - Floor redesigned to light-grey brick tiles with corrected 1:1 ground scroll speed.
+
+
+- Mobile controls added and responsive canvas scaling improved for phones.
+- Level now includes two cloud layers, hills, Poland-90s props (RUCH kiosk and bus stop), animated background bus, platform bricks, muzzle flashes, and explosion FX.
