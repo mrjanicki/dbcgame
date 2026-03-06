@@ -1,0 +1,3 @@
+# Generated art exports (recreate with: python3 tools/generate_assets.py)
+assets/generated/*.png
+!assets/generated/.gitkeep

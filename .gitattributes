@@ -1,0 +1,2 @@
+# Avoid rendering generated binary assets in diffs if ever committed by mistake
+*.png binary

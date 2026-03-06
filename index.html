@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DBCGame — Kalisz Run & Gun</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        margin: 0;
+        font-family: monospace;
+        background: #0d1626;
+        color: #e6edf8;
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+      }
+      .wrap { text-align: center; }
+      canvas {
+        border: 4px solid #d1a64d;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        background: #3d74cc;
+        box-shadow: 0 16px 48px rgba(0,0,0,.45);
+      }
+      p { margin: 8px 0 0; font-size: 12px; opacity: .9; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <canvas id="game" width="960" height="540" aria-label="Kalisz Run and Gun"></canvas>
+      <p>Move: A/D or ←/→ • Jump: W/↑/Space • Shoot: J/K • Restart: R</p>
+    </div>
+    <script type="module" src="./src/game.js"></script>
+  </body>
+</html>
