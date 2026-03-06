@@ -131,3 +131,5 @@ I attempted to install Playwright, but package installation in this environment 
 
 - Mobile controls added and responsive canvas scaling improved for phones.
 - Level now includes two cloud layers, hills, Poland-90s props (RUCH kiosk and bus stop), animated background bus, platform bricks, muzzle flashes, and explosion FX.
+
+- Character scale increased again and walk animation is now strictly movement-driven (no standstill walk).

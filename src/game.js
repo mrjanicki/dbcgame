@@ -5,7 +5,7 @@ ctx.imageSmoothingEnabled = false;
 const W = canvas.width;
 const H = canvas.height;
 const KEY_GREEN = [91, 191, 88];
-const PLAYER_SCALE = 7;
+const PLAYER_SCALE = 9;
 const PLAYER_W = 32 * PLAYER_SCALE;
 const PLAYER_H = 32 * PLAYER_SCALE;
 const GROUND_Y = 408;
@@ -14,6 +14,11 @@ const keys = new Set();
 const virtualKeys = new Set();
 window.addEventListener('keydown', (e) => keys.add(e.key.toLowerCase()));
 window.addEventListener('keyup', (e) => keys.delete(e.key.toLowerCase()));
+
+window.addEventListener('blur', () => {
+  keys.clear();
+  virtualKeys.clear();
+});
 
 function pressed(k) {
   return keys.has(k) || virtualKeys.has(k);
@@ -74,7 +79,8 @@ function buildFallbackPlayer() {
   ia.drawImage(walk[0], 0, 0);
   const [idleB, ib] = makeCanvas(32, 32);
   ib.drawImage(walk[0], 0, 0);
-  drawPx(ib, 9, 17, 14, 1, '#2d4c8f');
+  drawPx(ib, 8, 17, 16, 2, '#2d4c8f');
+  drawPx(ib, 11, 30, 10, 2, '#ffffff');
   const [jump, j] = makeCanvas(32, 32);
   j.drawImage(walk[1], 0, 0);
   drawPx(j, 8, 30, 6, 2, '#ebecf6');
@@ -169,7 +175,7 @@ const state = {
   player: {
     x: 120, y: 80, vx: 0, vy: 0, face: 1,
     onGround: false, shootCd: 0,
-    shooting: 0,
+    shooting: 0, moving: false,
   },
   platforms: [
     { x: 620, y: 340, w: 160, h: 20, angle: 0 },
@@ -190,7 +196,7 @@ function reset() {
   state.score = 0;
   state.over = false;
   state.busX = -260;
-  state.player = { x: 120, y: 80, vx: 0, vy: 0, face: 1, onGround: false, shootCd: 0, shooting: 0 };
+  state.player = { x: 120, y: 80, vx: 0, vy: 0, face: 1, onGround: false, shootCd: 0, shooting: 0, moving: false };
   state.enemies.forEach((e, i) => {
     e.x = 700 + i * 220;
     e.y = GROUND_Y - 26;
@@ -230,6 +236,7 @@ function update(dt) {
   const firing = pressed('j') || pressed('k');
 
   p.vx = 0;
+  p.moving = left || right;
   if (left) { p.vx = -260; p.face = -1; }
   if (right) { p.vx = 260; p.face = 1; }
   if (jump && p.onGround) { p.vy = -470; p.onGround = false; }
@@ -328,7 +335,7 @@ function drawPlayer(t) {
     frame = assets.player.shoot;
   } else if (!p.onGround) {
     frame = assets.player.jump;
-  } else if (Math.abs(p.vx) > 0) {
+  } else if (p.moving) {
     if (assets.playerSheet) {
       const index = Math.floor((t * 10) % 4);
       const [tmp, tc] = makeCanvas(32, 32);
@@ -452,6 +459,9 @@ function bindTouchButton(el, mappedKeys) {
   ['pointerdown', 'touchstart'].forEach((n) => el.addEventListener(n, start, { passive: false }));
   ['pointerup', 'pointercancel', 'pointerleave', 'touchend', 'touchcancel'].forEach((n) => el.addEventListener(n, end, { passive: false }));
 }
+
+window.addEventListener('pointerup', () => virtualKeys.clear());
+window.addEventListener('touchend', () => virtualKeys.clear(), { passive: true });
 
 function setupMobileControls() {
   const controls = document.getElementById('touch-controls');
