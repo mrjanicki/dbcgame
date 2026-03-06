@@ -5,7 +5,7 @@ ctx.imageSmoothingEnabled = false;
 const W = canvas.width;
 const H = canvas.height;
 const KEY_GREEN = [91, 191, 88];
-const PLAYER_SCALE = 9;
+const PLAYER_SCALE = 11;
 const PLAYER_W = 32 * PLAYER_SCALE;
 const PLAYER_H = 32 * PLAYER_SCALE;
 const GROUND_Y = 408;
@@ -60,6 +60,14 @@ function loadImage(src) {
     img.onerror = () => resolve(null);
     img.src = src;
   });
+}
+
+async function loadPreferredImage(candidates) {
+  for (const src of candidates) {
+    const img = await loadImage(src);
+    if (img) return img;
+  }
+  return null;
 }
 
 function buildFallbackPlayer() {
@@ -135,16 +143,50 @@ const assets = {
 };
 
 async function loadGeneratedAssets() {
-  const cloud = await loadImage('./assets/generated/clouds.png');
-  const blocks = await loadImage('./assets/generated/kalisz_blocks.png');
-  const trees = await loadImage('./assets/generated/trees_line.png');
-  const ground = await loadImage('./assets/generated/ground_tile.png');
-  const playerWalk = await loadImage('./assets/generated/player_walk.png');
-  const hills = await loadImage('./assets/generated/hills.png');
-  const platform = await loadImage('./assets/generated/platform_brick.png');
-  const kiosk = await loadImage('./assets/generated/kiosk_ruch.png');
-  const busStop = await loadImage('./assets/generated/bus_stop.png');
-  const bus = await loadImage('./assets/generated/bus_nineties.png');
+  const cloud = await loadPreferredImage([
+    './assets/generated/clouds_custom.png',
+    './assets/generated/clouds.png',
+  ]);
+  const blocks = await loadPreferredImage([
+    './assets/generated/buildings_custom.png',
+    './assets/generated/kalisz_blocks_custom.png',
+    './assets/generated/kalisz_blocks.png',
+  ]);
+  const trees = await loadPreferredImage([
+    './assets/generated/trees_custom.png',
+    './assets/generated/trees_line_custom.png',
+    './assets/generated/trees_line.png',
+  ]);
+  const ground = await loadPreferredImage([
+    './assets/generated/floor_contra.png',
+    './assets/generated/contra_floor.png',
+    './assets/generated/ground_contra.png',
+    './assets/generated/ground_tile.png',
+  ]);
+  const playerWalk = await loadPreferredImage([
+    './assets/generated/player_walk_custom.png',
+    './assets/generated/player_walk.png',
+  ]);
+  const hills = await loadPreferredImage([
+    './assets/generated/hills_custom.png',
+    './assets/generated/hills.png',
+  ]);
+  const platform = await loadPreferredImage([
+    './assets/generated/platform_custom.png',
+    './assets/generated/platform_brick.png',
+  ]);
+  const kiosk = await loadPreferredImage([
+    './assets/generated/kiosk_custom.png',
+    './assets/generated/kiosk_ruch.png',
+  ]);
+  const busStop = await loadPreferredImage([
+    './assets/generated/bus_stop_custom.png',
+    './assets/generated/bus_stop.png',
+  ]);
+  const bus = await loadPreferredImage([
+    './assets/generated/bus_custom.png',
+    './assets/generated/bus_nineties.png',
+  ]);
 
   if (cloud) {
     assets.cloudsNear = colorKeyToAlpha(cloud);
@@ -152,7 +194,7 @@ async function loadGeneratedAssets() {
   }
   if (blocks) assets.buildings = colorKeyToAlpha(blocks);
   if (trees) assets.trees = colorKeyToAlpha(trees);
-  if (ground) assets.ground = ground;
+  if (ground) assets.ground = colorKeyToAlpha(ground);
   if (playerWalk) assets.playerSheet = colorKeyToAlpha(playerWalk);
   if (hills) assets.hills = colorKeyToAlpha(hills);
   if (platform) assets.platformTile = colorKeyToAlpha(platform);
@@ -160,6 +202,7 @@ async function loadGeneratedAssets() {
   if (busStop) assets.busStop = colorKeyToAlpha(busStop);
   if (bus) assets.bus = colorKeyToAlpha(bus);
 }
+
 
 const state = {
   camX: 0,

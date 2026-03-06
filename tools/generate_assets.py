@@ -235,12 +235,33 @@ def save_platform_tiles():
     plat.save_png(OUT / 'platform_brick.png')
 
 
+def save_contra_floor_tile():
+    tile = Image(64, 64)
+    # Contra-inspired tech/metal floor palette
+    tile.rect(0, 0, 64, 64, (66, 72, 86, 255))
+    for y in range(0, 64, 16):
+        tile.rect(0, y, 64, 2, (102, 110, 128, 255))
+        tile.rect(0, y + 15, 64, 1, (40, 44, 55, 255))
+    for x in range(0, 64, 16):
+        tile.rect(x, 0, 2, 64, (96, 102, 120, 255))
+    # amber warning strips
+    for x in range(4, 60, 12):
+        tile.rect(x, 6, 6, 3, (228, 166, 68, 255))
+        tile.rect(x, 38, 6, 3, (228, 166, 68, 255))
+    # bolts
+    for bx, by in [(6, 24), (22, 24), (38, 24), (54, 24), (6, 54), (22, 54), (38, 54), (54, 54)]:
+        tile.rect(bx, by, 3, 3, (176, 182, 196, 255))
+
+    tile.save_png(OUT / 'floor_contra.png')
+
+
 if __name__ == '__main__':
     save_player_walk()
     save_clouds()
     save_trees()
     save_buildings()
     save_ground_tile()
+    save_contra_floor_tile()
     save_poland_props()
     save_platform_tiles()
     print('Generated assets in', OUT)

@@ -133,3 +133,17 @@ I attempted to install Playwright, but package installation in this environment 
 - Level now includes two cloud layers, hills, Poland-90s props (RUCH kiosk and bus stop), animated background bus, platform bricks, muzzle flashes, and explosion FX.
 
 - Character scale increased again and walk animation is now strictly movement-driven (no standstill walk).
+
+## Using your uploaded assets in `assets/generated`
+
+Yes — the game now auto-loads your uploaded files when present. Priority names:
+
+- Character: `player_walk_custom.png` (fallback: `player_walk.png`)
+- Buildings: `buildings_custom.png` or `kalisz_blocks_custom.png` (fallback: `kalisz_blocks.png`)
+- Trees: `trees_custom.png` or `trees_line_custom.png` (fallback: `trees_line.png`)
+- Floor (Contra-style): `floor_contra.png` / `contra_floor.png` / `ground_contra.png` (fallback: `ground_tile.png`)
+- Clouds: `clouds_custom.png` (fallback: `clouds.png`)
+- Props: `kiosk_custom.png`, `bus_stop_custom.png`, `bus_custom.png` (fallbacks: generated defaults)
+
+If files use a green background key, runtime chroma-key conversion is applied automatically.
+
