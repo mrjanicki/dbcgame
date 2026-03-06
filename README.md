@@ -118,6 +118,6 @@ I attempted to install Playwright, but package installation in this environment 
 ## Latest gameplay/art tuning
 
 - Generated assets now use a unified non-alpha green background for consistent export previews.
-- Game now uses generated `kalisz_blocks.png` and `trees_line.png` layers in scene rendering.
+- Game now uses generated `kalisz_blocks.png`, `trees_line.png`, and `ground_tile.png` layers in scene rendering.
 - Added cloud drift animation, larger player render scale, larger bullets, and a jump animation frame.
 - Floor redesigned to light-grey brick tiles with corrected 1:1 ground scroll speed.

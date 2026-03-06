@@ -5,10 +5,10 @@ ctx.imageSmoothingEnabled = false;
 const W = canvas.width;
 const H = canvas.height;
 const KEY_GREEN = [91, 191, 88];
-const PLAYER_SCALE = 3;
+const PLAYER_SCALE = 4;
 const PLAYER_W = 32 * PLAYER_SCALE;
 const PLAYER_H = 32 * PLAYER_SCALE;
-const GROUND_Y = 410;
+const GROUND_Y = 420;
 
 const keys = new Set();
 window.addEventListener('keydown', (e) => keys.add(e.key.toLowerCase()));
@@ -131,10 +131,12 @@ async function loadGeneratedAssets() {
   const cloud = await loadImage('./assets/generated/clouds.png');
   const blocks = await loadImage('./assets/generated/kalisz_blocks.png');
   const trees = await loadImage('./assets/generated/trees_line.png');
+  const ground = await loadImage('./assets/generated/ground_tile.png');
 
   if (cloud) assets.clouds = colorKeyToAlpha(cloud);
   if (blocks) assets.buildings = colorKeyToAlpha(blocks);
   if (trees) assets.trees = colorKeyToAlpha(trees);
+  if (ground) assets.ground = ground;
 }
 
 const state = {
@@ -156,7 +158,7 @@ function reset() {
   state.bullets = [];
   state.score = 0;
   state.over = false;
-  state.player = { x: 120, y: 120, vx: 0, vy: 0, face: 1, onGround: false, shootCd: 0 };
+  state.player = { x: 120, y: 80, vx: 0, vy: 0, face: 1, onGround: false, shootCd: 0 };
   state.enemies.forEach((e, i) => {
     e.x = 640 + i * 230;
     e.alive = true;
@@ -227,7 +229,7 @@ function update(dt) {
     e.x += e.dir * 62 * dt;
     if (Math.abs(e.x - p.x) > 340) e.dir *= -1;
 
-    if (Math.abs(e.x - p.x) < 36 && Math.abs(e.y - (p.y + PLAYER_H * 0.45)) < 34) state.over = true;
+    if (Math.abs(e.x - p.x) < 44 && Math.abs(e.y - (p.y + PLAYER_H * 0.45)) < 42) state.over = true;
 
     for (const b of state.bullets) {
       if (b.x >= e.x && b.x <= e.x + e.w && b.y >= e.y && b.y <= e.y + e.h) {
@@ -252,9 +254,10 @@ function render(t) {
   drawParallax(assets.buildings, 0.27, 145, 0, 1.35);
   drawParallax(assets.trees, 0.42, 238, 0, 1.4);
 
-  for (let x = -64; x < W + 64; x += 64) {
-    const gx = Math.floor(x - (state.camX % 64));
-    ctx.drawImage(assets.ground, gx, GROUND_Y, 64, 64);
+  // floor at 1:1 camera speed (no parallax), wrapped smoothly to avoid jitter
+  const tileOffset = ((state.camX % 64) + 64) % 64;
+  for (let x = -tileOffset - 64; x < W + 64; x += 64) {
+    ctx.drawImage(assets.ground, Math.floor(x), GROUND_Y, 64, 64);
   }
 
   state.enemies.forEach((e) => {
