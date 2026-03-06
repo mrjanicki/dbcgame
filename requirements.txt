@@ -1,0 +1,8 @@
+Pillow
+numpy
+opencv-python
+matplotlib
+imageio
+scikit-image
+
+# Other dependencies can be added as needed
