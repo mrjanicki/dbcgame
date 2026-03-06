@@ -5,10 +5,10 @@ ctx.imageSmoothingEnabled = false;
 const W = canvas.width;
 const H = canvas.height;
 const KEY_GREEN = [91, 191, 88];
-const PLAYER_SCALE = 2;
+const PLAYER_SCALE = 3;
 const PLAYER_W = 32 * PLAYER_SCALE;
 const PLAYER_H = 32 * PLAYER_SCALE;
-const GROUND_Y = 398;
+const GROUND_Y = 410;
 
 const keys = new Set();
 window.addEventListener('keydown', (e) => keys.add(e.key.toLowerCase()));
@@ -156,7 +156,7 @@ function reset() {
   state.bullets = [];
   state.score = 0;
   state.over = false;
-  state.player = { x: 120, y: 160, vx: 0, vy: 0, face: 1, onGround: false, shootCd: 0 };
+  state.player = { x: 120, y: 120, vx: 0, vy: 0, face: 1, onGround: false, shootCd: 0 };
   state.enemies.forEach((e, i) => {
     e.x = 640 + i * 230;
     e.alive = true;
@@ -168,7 +168,7 @@ function shoot() {
   const p = state.player;
   if (p.shootCd > 0) return;
   p.shootCd = 0.16;
-  state.bullets.push({ x: p.x + PLAYER_W / 2, y: p.y + 25, vx: 620 * p.face });
+  state.bullets.push({ x: p.x + PLAYER_W / 2, y: p.y + PLAYER_H * 0.42, vx: 620 * p.face });
 }
 
 function drawParallax(image, factor, y, extraOffset = 0, scale = 1) {
@@ -227,7 +227,7 @@ function update(dt) {
     e.x += e.dir * 62 * dt;
     if (Math.abs(e.x - p.x) > 340) e.dir *= -1;
 
-    if (Math.abs(e.x - p.x) < 24 && Math.abs(e.y - (p.y + 20)) < 24) state.over = true;
+    if (Math.abs(e.x - p.x) < 36 && Math.abs(e.y - (p.y + PLAYER_H * 0.45)) < 34) state.over = true;
 
     for (const b of state.bullets) {
       if (b.x >= e.x && b.x <= e.x + e.w && b.y >= e.y && b.y <= e.y + e.h) {
