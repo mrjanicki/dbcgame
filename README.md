@@ -93,3 +93,23 @@ I can continue doing branch updates and conflict resolution from here and commit
 - That error is usually GitHub-side/transient on mobile.
 - Still, I hardened the repo by ignoring generated PNGs (`.gitignore`) and marking PNGs as binary (`.gitattributes`) to reduce diff/render pressure.
 
+## One-command branch update (bypass GitHub mobile "Update branch")
+
+Because the mobile UI is currently returning HTTP 500 for you, use this script instead:
+
+```bash
+cd /workspace/dbcgame
+./tools/update_branch.sh main --push
+```
+
+What it does:
+- fetches `origin`
+- merges `origin/main` into your current branch
+- pushes your branch back to `origin` (when `--push` is provided)
+
+If there is a merge conflict, Git will stop and show exactly which files need resolution.
+
+## About Playwright install
+
+I attempted to install Playwright, but package installation in this environment is blocked by proxy/network policy (`403 Forbidden` from package index). This is unrelated to your GitHub mobile `Update branch` 500 error.
+
