@@ -13,7 +13,7 @@ def clamp(v: int) -> int:
 
 
 class Image:
-    def __init__(self, width: int, height: int, bg=(0, 0, 0, 0)) -> None:
+    def __init__(self, width: int, height: int, bg=(91, 191, 88, 255)) -> None:
         self.width = width
         self.height = height
         self.px = [list(bg) for _ in range(width * height)]
@@ -125,7 +125,7 @@ def save_player_walk():
 
 def save_clouds():
     img = Image(256, 64)
-    shades = [(244, 248, 252, 180), (218, 232, 245, 160), (200, 218, 236, 150)]
+    shades = [(244, 248, 252, 255), (218, 232, 245, 255), (200, 218, 236, 255)]
 
     clusters = [(30, 20), (110, 14), (180, 25)]
     for cx, cy in clusters:
@@ -200,16 +200,19 @@ def save_buildings():
 
 def save_ground_tile():
     img = Image(64, 64)
-    img.rect(0, 0, 64, 64, (92, 71, 39, 255))
-    for y in range(0, 64, 8):
-        for x in range((y // 8) % 2 * 4, 64, 8):
-            img.rect(x, y, 4, 4, (110, 85, 48, 255))
+    # light grey brick floor tile
+    img.rect(0, 0, 64, 64, (166, 173, 184, 255))
+    for row in range(8):
+        y = row * 8
+        offset = 0 if row % 2 == 0 else 8
+        for x in range(-offset, 64, 16):
+            img.rect(x + 1, y + 1, 14, 6, (200, 206, 216, 255))
+            img.rect(x + 1, y + 1, 14, 1, (230, 234, 240, 255))
+            img.rect(x + 1, y + 6, 14, 1, (131, 138, 149, 255))
 
-    img.rect(0, 0, 64, 12, (64, 132, 59, 255))
-    for x in range(0, 64, 4):
-        img.rect(x, 0, 2, 6 + (x % 3), (77, 154, 69, 255))
-
+    img.rect(0, 0, 64, 10, (132, 140, 152, 255))
     img.save_png(OUT / 'ground_tile.png')
+
 
 
 if __name__ == '__main__':

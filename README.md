@@ -113,3 +113,11 @@ If there is a merge conflict, Git will stop and show exactly which files need re
 
 I attempted to install Playwright, but package installation in this environment is blocked by proxy/network policy (`403 Forbidden` from package index). This is unrelated to your GitHub mobile `Update branch` 500 error.
 
+
+
+## Latest gameplay/art tuning
+
+- Generated assets now use a unified non-alpha green background for consistent export previews.
+- Game now uses generated `kalisz_blocks.png` and `trees_line.png` layers in scene rendering.
+- Added cloud drift animation, larger player render scale, larger bullets, and a jump animation frame.
+- Floor redesigned to light-grey brick tiles with corrected 1:1 ground scroll speed.
