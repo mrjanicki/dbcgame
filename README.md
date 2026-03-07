@@ -206,3 +206,24 @@ What this does now:
 
 After this succeeds, refresh `https://dbcgame.vercel.app/`.
 
+## Verify GitHub + Vercel is serving latest
+
+Run this one command locally:
+
+```bash
+cd /workspace/dbcgame
+./tools/check_release_status.sh
+```
+
+It checks:
+- local commit SHA
+- whether `origin` is configured/reachable
+- whether Vercel URL returns expected app title (and catches `DEPLOYMENT_NOT_FOUND`/404)
+- local playability smoke check on `http://127.0.0.1:8000/`
+
+Optional env vars:
+
+```bash
+VERCEL_URL=https://dbcgame.vercel.app/ EXPECTED_TITLE="DBCGame — Kalisz Run & Gun" ./tools/check_release_status.sh
+```
+
