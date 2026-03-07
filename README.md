@@ -147,3 +147,26 @@ Yes — the game now auto-loads your uploaded files when present. Priority names
 
 If files use a green background key, runtime chroma-key conversion is applied automatically.
 
+## Vercel deployment (serve latest version)
+
+This repo now includes `vercel.json` so Vercel serves `index.html` reliably and avoids stale-cache behavior.
+
+### Deploy latest version to `dbcgame.vercel.app`
+
+From your local machine (where your Vercel account is logged in):
+
+```bash
+cd /workspace/dbcgame
+./tools/deploy_vercel.sh
+```
+
+Or manually:
+
+```bash
+vercel pull --yes --environment=production
+vercel build --prod
+vercel deploy --prebuilt --prod
+```
+
+If your Vercel project is connected to GitHub, also ensure **Production Branch** matches this working branch so each push deploys automatically.
+
