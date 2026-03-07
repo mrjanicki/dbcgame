@@ -182,3 +182,27 @@ If your Vercel project is connected to GitHub, also ensure **Production Branch**
 - Fixed Vercel routing to **filesystem-first** and then fallback to `index.html`, which prevents production white-screen/`Not Found` caused by over-aggressive rewrites.
 - Deployment helper now works even without global Vercel CLI by using `npx --yes vercel` fallback.
 - Current gameplay baseline preserved: uploaded/custom asset loading, player scale reset to earlier requested size, enemy sizing/hitbox rebalanced, and walk-vs-idle behavior corrected.
+
+## Fix for Vercel `DEPLOYMENT_NOT_FOUND` (404)
+
+That error means your domain is currently pointing at a deployment ID that no longer exists.
+
+Run this from your local machine to relink and publish fresh production:
+
+```bash
+cd /workspace/dbcgame
+# optional if team project:
+# export VERCEL_SCOPE=<team-or-account>
+# optional if project name differs:
+# export VERCEL_PROJECT=<project-name>
+./tools/deploy_vercel.sh
+```
+
+What this does now:
+- links the project if `.vercel/project.json` is missing
+- pulls production env/config
+- builds
+- deploys to production
+
+After this succeeds, refresh `https://dbcgame.vercel.app/`.
+
