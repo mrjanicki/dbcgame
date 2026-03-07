@@ -170,3 +170,6 @@ vercel deploy --prebuilt --prod
 
 If your Vercel project is connected to GitHub, also ensure **Production Branch** matches this working branch so each push deploys automatically.
 
+
+- Character scale has been set back to the size from two iterations earlier and enemy scaling/colliders were rebalanced to match.
+- HUD now shows `ASSETS CUSTOM` when uploaded `_custom` assets are detected at runtime.

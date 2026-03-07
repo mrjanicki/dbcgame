@@ -5,9 +5,11 @@ ctx.imageSmoothingEnabled = false;
 const W = canvas.width;
 const H = canvas.height;
 const KEY_GREEN = [91, 191, 88];
-const PLAYER_SCALE = 11;
+const PLAYER_SCALE = 7;
 const PLAYER_W = 32 * PLAYER_SCALE;
 const PLAYER_H = 32 * PLAYER_SCALE;
+const ENEMY_W = Math.floor(PLAYER_W * 0.62);
+const ENEMY_H = Math.floor(PLAYER_H * 0.62);
 const GROUND_Y = 408;
 
 const keys = new Set();
@@ -62,10 +64,15 @@ function loadImage(src) {
   });
 }
 
-async function loadPreferredImage(candidates) {
+async function loadPreferredImage(candidates, label = '') {
   for (const src of candidates) {
     const img = await loadImage(src);
-    if (img) return img;
+    if (img) {
+      const isCustom = src.includes('_custom') || src.includes('uploaded');
+      if (isCustom) assets.assetInfo.customCount += 1;
+      if (label) assets.assetInfo.loaded.push(`${label}:${src.split('/').pop()}`);
+      return img;
+    }
   }
   return null;
 }
@@ -140,53 +147,54 @@ const assets = {
   kiosk: null,
   busStop: null,
   bus: null,
+  assetInfo: { customCount: 0, loaded: [] },
 };
 
 async function loadGeneratedAssets() {
   const cloud = await loadPreferredImage([
     './assets/generated/clouds_custom.png',
     './assets/generated/clouds.png',
-  ]);
+  ], 'clouds');
   const blocks = await loadPreferredImage([
     './assets/generated/buildings_custom.png',
     './assets/generated/kalisz_blocks_custom.png',
     './assets/generated/kalisz_blocks.png',
-  ]);
+  ], 'buildings');
   const trees = await loadPreferredImage([
     './assets/generated/trees_custom.png',
     './assets/generated/trees_line_custom.png',
     './assets/generated/trees_line.png',
-  ]);
+  ], 'trees');
   const ground = await loadPreferredImage([
     './assets/generated/floor_contra.png',
     './assets/generated/contra_floor.png',
     './assets/generated/ground_contra.png',
     './assets/generated/ground_tile.png',
-  ]);
+  ], 'ground');
   const playerWalk = await loadPreferredImage([
     './assets/generated/player_walk_custom.png',
     './assets/generated/player_walk.png',
-  ]);
+  ], 'player');
   const hills = await loadPreferredImage([
     './assets/generated/hills_custom.png',
     './assets/generated/hills.png',
-  ]);
+  ], 'hills');
   const platform = await loadPreferredImage([
     './assets/generated/platform_custom.png',
     './assets/generated/platform_brick.png',
-  ]);
+  ], 'platform');
   const kiosk = await loadPreferredImage([
     './assets/generated/kiosk_custom.png',
     './assets/generated/kiosk_ruch.png',
-  ]);
+  ], 'kiosk');
   const busStop = await loadPreferredImage([
     './assets/generated/bus_stop_custom.png',
     './assets/generated/bus_stop.png',
-  ]);
+  ], 'busStop');
   const bus = await loadPreferredImage([
     './assets/generated/bus_custom.png',
     './assets/generated/bus_nineties.png',
-  ]);
+  ], 'bus');
 
   if (cloud) {
     assets.cloudsNear = colorKeyToAlpha(cloud);
@@ -229,7 +237,7 @@ const state = {
 };
 
 for (let i = 0; i < 24; i++) {
-  state.enemies.push({ x: 700 + i * 220, y: GROUND_Y - 26, w: 22, h: 26, dir: i % 2 ? -1 : 1, alive: true });
+  state.enemies.push({ x: 700 + i * 260, y: GROUND_Y - ENEMY_H, w: ENEMY_W, h: ENEMY_H, dir: i % 2 ? -1 : 1, alive: true });
 }
 
 function reset() {
@@ -241,8 +249,8 @@ function reset() {
   state.busX = -260;
   state.player = { x: 120, y: 80, vx: 0, vy: 0, face: 1, onGround: false, shootCd: 0, shooting: 0, moving: false };
   state.enemies.forEach((e, i) => {
-    e.x = 700 + i * 220;
-    e.y = GROUND_Y - 26;
+    e.x = 700 + i * 260;
+    e.y = GROUND_Y - ENEMY_H;
     e.alive = true;
     e.dir = i % 2 ? -1 : 1;
   });
@@ -329,9 +337,9 @@ function update(dt) {
   state.enemies.forEach((e) => {
     if (!e.alive) return;
     e.x += e.dir * 66 * dt;
-    if (Math.abs(e.x - p.x) > 360) e.dir *= -1;
+    if (Math.abs(e.x - p.x) > 420) e.dir *= -1;
 
-    if (Math.abs(e.x - p.x) < 48 && Math.abs(e.y - (p.y + PLAYER_H * 0.45)) < 44) state.over = true;
+    if (Math.abs((e.x + e.w * 0.5) - (p.x + PLAYER_W * 0.5)) < (e.w * 0.38 + PLAYER_W * 0.18) && Math.abs((e.y + e.h * 0.5) - (p.y + PLAYER_H * 0.55)) < (e.h * 0.4 + PLAYER_H * 0.18)) state.over = true;
 
     for (const b of state.bullets) {
       if (b.x >= e.x && b.x <= e.x + e.w && b.y >= e.y && b.y <= e.y + e.h) {
@@ -401,6 +409,10 @@ function drawPlayer(t) {
     ctx.restore();
   }
 
+  // extra costume details for readability at large scale
+  drawPx(ctx, px + PLAYER_W * 0.32, p.y + PLAYER_H * 0.62, PLAYER_W * 0.36, PLAYER_H * 0.04, '#243a6f');
+  drawPx(ctx, px + PLAYER_W * 0.34, p.y + PLAYER_H * 0.86, PLAYER_W * 0.3, PLAYER_H * 0.03, '#f7f9ff');
+
   if (state.muzzleFlash > 0 && p.shooting > 0) {
     ctx.fillStyle = '#ffe89f';
     const fx = px + (p.face > 0 ? PLAYER_W * 0.9 : -8);
@@ -444,9 +456,12 @@ function render(t) {
   state.enemies.forEach((e) => {
     if (!e.alive) return;
     const sx = e.x - state.camX;
-    drawPx(ctx, sx, e.y, 22, 26, '#742e38');
-    drawPx(ctx, sx + 4, e.y + 3, 13, 6, '#f1b46a');
-    drawPx(ctx, sx + 3, e.y + 17, 15, 8, '#2e4370');
+    drawPx(ctx, sx, e.y, e.w, e.h, '#742e38');
+    drawPx(ctx, sx + e.w * 0.2, e.y + e.h * 0.12, e.w * 0.6, e.h * 0.24, '#f1b46a');
+    drawPx(ctx, sx + e.w * 0.14, e.y + e.h * 0.55, e.w * 0.72, e.h * 0.3, '#2e4370');
+    drawPx(ctx, sx + e.w * 0.1, e.y + e.h * 0.36, e.w * 0.8, e.h * 0.06, '#181f31');
+    drawPx(ctx, sx + e.w * 0.28, e.y + e.h * 0.22, e.w * 0.12, e.h * 0.08, '#ffffff');
+    drawPx(ctx, sx + e.w * 0.62, e.y + e.h * 0.22, e.w * 0.12, e.h * 0.08, '#ffffff');
   });
 
   state.explosions.forEach((e) => {
@@ -475,6 +490,9 @@ function render(t) {
   ctx.font = '16px monospace';
   ctx.fillText(`SCORE ${String(state.score).padStart(5, '0')}`, 28, 34);
   ctx.fillText(`X ${Math.floor(state.camX / 10)}`, 28, 54);
+  ctx.fillStyle = '#9cc6ff';
+  ctx.font = '12px monospace';
+  ctx.fillText(`ASSETS ${assets.assetInfo.customCount > 0 ? 'CUSTOM' : 'DEFAULT'}`, 170, 54);
 
   if (state.over) {
     ctx.fillStyle = 'rgba(2,8,17,.75)';
