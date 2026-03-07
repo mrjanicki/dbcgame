@@ -160,6 +160,8 @@ cd /workspace/dbcgame
 ./tools/deploy_vercel.sh
 ```
 
+The script now auto-falls back to `npx vercel` if global CLI is missing.
+
 Or manually:
 
 ```bash
@@ -173,3 +175,10 @@ If your Vercel project is connected to GitHub, also ensure **Production Branch**
 
 - Character scale has been set back to the size from two iterations earlier and enemy scaling/colliders were rebalanced to match.
 - HUD now shows `ASSETS CUSTOM` when uploaded `_custom` assets are detected at runtime.
+
+
+## Latest stability fix (Vercel Not Found)
+
+- Fixed Vercel routing to **filesystem-first** and then fallback to `index.html`, which prevents production white-screen/`Not Found` caused by over-aggressive rewrites.
+- Deployment helper now works even without global Vercel CLI by using `npx --yes vercel` fallback.
+- Current gameplay baseline preserved: uploaded/custom asset loading, player scale reset to earlier requested size, enemy sizing/hitbox rebalanced, and walk-vs-idle behavior corrected.

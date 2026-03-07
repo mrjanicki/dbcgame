@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v vercel >/dev/null 2>&1; then
-  echo "❌ Vercel CLI not found. Install with: npm i -g vercel"
-  exit 1
+if command -v vercel >/dev/null 2>&1; then
+  VERCEL_BIN="vercel"
+else
+  VERCEL_BIN="npx --yes vercel"
 fi
 
+echo "➡️ Using: ${VERCEL_BIN}"
 echo "➡️ Pulling Vercel env/project settings..."
-vercel pull --yes --environment=production
+${VERCEL_BIN} pull --yes --environment=production
 
 echo "➡️ Building preview artifact..."
-vercel build --prod
+${VERCEL_BIN} build --prod
 
 echo "➡️ Deploying latest local commit to production..."
-vercel deploy --prebuilt --prod
+${VERCEL_BIN} deploy --prebuilt --prod
 
 echo "✅ Production deploy request sent."
