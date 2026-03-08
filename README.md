@@ -227,3 +227,5 @@ Optional env vars:
 VERCEL_URL=https://dbcgame.vercel.app/ EXPECTED_TITLE="DBCGame — Kalisz Run & Gun" ./tools/check_release_status.sh
 ```
 
+
+- iPhone layout now uses full-viewport responsive canvas shell with safe-area padding and larger touch buttons.
